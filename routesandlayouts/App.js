@@ -1,105 +1,51 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Animated, Easing } from 'react-native';
-
-const quotes = [
-  "Code like neon: bright, bold, and impossible to ignore.",
-  "Dream in code, live in color.",
-  "Stay curious, stay glowing.",
-  "Build your world one line at a time."
-];
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { StatusBar } from "expo-status-bar";
 
 export default function App() {
-  const glowAnim = useRef(new Animated.Value(0.7)).current; // opacity for glow
-  const moveAnim = useRef(new Animated.Value(0)).current;
-  const [currentQuote, setCurrentQuote] = useState(0);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  useEffect(() => {
-    // Neon glow pulse using opacity (safe)
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(glowAnim, {
-          toValue: 1,
-          duration: 1500,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true, // safe because opacity
-        }),
-        Animated.timing(glowAnim, {
-          toValue: 0.7,
-          duration: 1500,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true, // safe
-        }),
-      ])
-    ).start();
+  const handleLogin = () => {
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
+    }
 
-    // Floating effect
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(moveAnim, {
-          toValue: 10,
-          duration: 2000,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-        Animated.timing(moveAnim, {
-          toValue: -10,
-          duration: 2000,
-          easing: Easing.inOut(Easing.sin),
-          useNativeDriver: true,
-        }),
-      ])
-    ).start();
-
-    // Cycle quotes
-    const quoteInterval = setInterval(() => {
-      setCurrentQuote((prev) => (prev + 1) % quotes.length);
-    }, 5000);
-
-    return () => clearInterval(quoteInterval);
-  }, []);
+    alert(`Login Successful!\nWelcome, ${email}`);
+  };
 
   return (
     <View style={styles.container}>
-      {/* Floating Profile Box */}
-      <Animated.View
-        style={[
-          styles.profileBox,
-          {
-            transform: [{ translateY: moveAnim }],
-            shadowOpacity: glowAnim, // animate shadow glow
-          },
-        ]}
-      >
-        {/* Avatar */}
-        <Animated.View style={[styles.avatar, { shadowOpacity: glowAnim }]}>
-          <Text style={styles.avatarText}>SA</Text>
-        </Animated.View>
 
-        <Text style={styles.title}>PROFILE</Text>
+      <Text style={styles.title}>Login</Text>
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>Name:</Text>
-          <Text style={styles.value}>SHREYASH AKKI</Text>
-        </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Email"
+        placeholderTextColor="#777"
+        value={email}
+        onChangeText={setEmail}
+      />
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>USN:</Text>
-          <Text style={styles.value}>4NI24IS195</Text>
-        </View>
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        secureTextEntry
+        placeholderTextColor="#777"
+        value={password}
+        onChangeText={setPassword}
+      />
 
-        <View style={styles.infoRow}>
-          <Text style={styles.label}>College:</Text>
-          <Text style={styles.value}>
-            The National Institute of Engineering, Mysore
-          </Text>
-        </View>
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Sign In</Text>
+      </TouchableOpacity>
 
-        {/* Quote */}
-        <Text style={styles.quote}>{quotes[currentQuote]}</Text>
-      </Animated.View>
+      <TouchableOpacity>
+        <Text style={styles.forgot}>Forgot Password?</Text>
+      </TouchableOpacity>
 
-      <StatusBar style="light" />
+      <StatusBar style="auto" />
     </View>
   );
 }
@@ -107,78 +53,46 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#050014',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  profileBox: {
-    width: '90%',
-    padding: 30,
-    borderRadius: 20,
-    backgroundColor: '#0A001F',
-    borderWidth: 3,
-    borderColor: '#00eaff', // fixed neon color
-    shadowColor: '#00eaff',
-    shadowRadius: 20,
-    shadowOffset: { width: 0, height: 0 },
-    alignItems: 'center',
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#120033',
-    borderWidth: 3,
-    borderColor: '#00eaff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 20,
-    shadowColor: '#00eaff',
-    shadowRadius: 25,
-    shadowOffset: { width: 0, height: 0 },
-  },
-  avatarText: {
-    fontSize: 36,
-    color: '#00eaff',
-    fontWeight: '800',
-    textShadowColor: '#00eaff',
-    textShadowRadius: 15,
+    backgroundColor: "#ffffff",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 30,
   },
   title: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: '#00eaff',
-    marginBottom: 20,
-    textShadowColor: '#00eaff',
-    textShadowRadius: 20,
+    fontSize: 32,
+    fontWeight: "800",
+    marginBottom: 40,
+    color: "#333",
   },
-  infoRow: {
-    width: '100%',
+  input: {
+    width: "100%",
+    height: 50,
+    borderWidth: 1.5,
+    borderColor: "#ddd",
+    borderRadius: 10,
+    paddingHorizontal: 15,
     marginBottom: 15,
-  },
-  label: {
-    fontSize: 18,
-    color: '#b366ff',
-    fontWeight: '700',
-    marginBottom: 4,
-  },
-  value: {
-    fontSize: 20,
-    color: '#00eaff',
-    fontWeight: '600',
-    lineHeight: 24,
-    textShadowColor: '#00eaff',
-    textShadowRadius: 8,
-  },
-  quote: {
-    marginTop: 25,
     fontSize: 16,
-    fontStyle: 'italic',
-    color: '#ff6ec7',
-    textAlign: 'center',
-    lineHeight: 22,
-    textShadowColor: '#ff6ec7',
-    textShadowRadius: 8,
+    color: "#333",
+  },
+  button: {
+    width: "100%",
+    height: 50,
+    backgroundColor: "#4A148C",
+    borderRadius: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  forgot: {
+    color: "#4A148C",
+    fontWeight: "500",
+    marginTop: 5,
   },
 });
